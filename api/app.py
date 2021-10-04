@@ -7,6 +7,12 @@ app = Flask(__name__)
 def main():
     return jsonify({ "MESSAGE" : "MIA Practica 1" })
 
+@app.route("/conteos")
+def getConteos():
+    conexion = conection()
+    consulta = conexion.conteos();
+    return jsonify({ "NAME": "Consulta 1", "QUERY":consulta})
+
 @app.route("/consulta1")
 def getConsulta1():
     conexion = conection()

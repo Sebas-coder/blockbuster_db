@@ -4,18 +4,18 @@
 -- ~ borrado y creacion de tablas
 BEGIN;
     DROP TABLE IF EXISTS pelicula CASCADE;
-    DROP TABLE IF EXISTS categoria CASCADE;
     DROP TABLE IF EXISTS actor CASCADE;
     DROP TABLE IF EXISTS ciudad CASCADE;
-    DROP TABLE IF EXISTS pelicula_actor CASCADE;
+    DROP TABLE IF EXISTS pelicula_tienda CASCADE;
     DROP TABLE IF EXISTS pelicula_categoria CASCADE;
+    DROP TABLE IF EXISTS pelicula_actor CASCADE;
+    DROP TABLE IF EXISTS renta CASCADE;
+    DROP TABLE IF EXISTS categoria CASCADE;
     DROP TABLE IF EXISTS tienda CASCADE;
     DROP TABLE IF EXISTS cliente CASCADE;
     DROP TABLE IF EXISTS empleado CASCADE;
     DROP TABLE IF EXISTS clasificacion CASCADE;
     DROP TABLE IF EXISTS direccion CASCADE;
-    DROP TABLE IF EXISTS pelicula_tienda CASCADE;
-    DROP TABLE IF EXISTS renta CASCADE;
 COMMIT;
 
 -- ~ declaracion de tablas 

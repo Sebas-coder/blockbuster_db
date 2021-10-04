@@ -45,6 +45,7 @@ class conection():
                 'STATE': 'Error',
                 'MESSAGE': str(e)
             }
+        self.conexion.commit()
         return query
 
     def eliminarModelo(self):
@@ -62,6 +63,7 @@ class conection():
                 'STATE': 'Error',
                 'MESSAGE': str(e)
             }
+        self.conexion.commit()
         return query
 
     def cargaTemporal(self):
@@ -79,11 +81,11 @@ class conection():
                 'STATE': 'Error',
                 'MESSAGE': str(e)
             }
+        self.conexion.commit()
         return query
 
     def cargaModelo(self):
         query = {}
-
         try:
             sql = CARGA_MASIVA
             self.cursor.execute(sql)
@@ -96,6 +98,7 @@ class conection():
                 'STATE': 'Error',
                 'MESSAGE': str(e)
             }
+        self.conexion.commit()
         return query
 
     def consulta1(self):
@@ -310,4 +313,5 @@ class conection():
 
 if __name__ == '__main__':
     c = conection()
-    c.conteo()
+    # c.eliminarModelo()
+    c.cargaModelo()

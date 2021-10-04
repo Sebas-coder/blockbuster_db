@@ -1,12 +1,11 @@
 CARGA_MASIVA= ''' 
-    INSERT INTO ciudad(nombre, pais)
+        INSERT INTO ciudad(nombre, pais)
         SELECT INITCAP(t.ciudad_cliente), INITCAP(t.pais_cliente)
         FROM TEMPORAL t WHERE t.ciudad_cliente <> '-' AND t.pais_cliente <> '-' AND 
         NOT EXISTS (SELECT c.nombre, c.pais FROM ciudad c 
         WHERE INITCAP(c.nombre) = INITCAP(t.ciudad_cliente) AND INITCAP(c.pais) = INITCAP(t.pais_cliente))
         GROUP BY (INITCAP(t.ciudad_cliente), INITCAP(t.pais_cliente));
         
-        -- empleado
         INSERT INTO ciudad(nombre, pais)
         SELECT INITCAP(t.ciudad_empleado), INITCAP(t.pais_empleado)
         FROM TEMPORAL t WHERE t.ciudad_empleado <> '-' AND t.pais_empleado <> '-' AND 
@@ -14,7 +13,6 @@ CARGA_MASIVA= '''
         WHERE INITCAP(c.nombre) = INITCAP(t.ciudad_empleado) AND INITCAP(c.pais) = INITCAP(t.pais_empleado))
         GROUP BY (INITCAP(t.ciudad_empleado), INITCAP(t.pais_empleado));
         
-        -- ciudad
         INSERT INTO ciudad(nombre, pais)
         SELECT INITCAP(t.ciudad_tienda), INITCAP(t.pais_tienda)
         FROM TEMPORAL t WHERE t.ciudad_tienda <> '-' AND t.pais_tienda <> '-' AND
@@ -22,8 +20,6 @@ CARGA_MASIVA= '''
         WHERE INITCAP(c.nombre) = INITCAP(t.ciudad_tienda) AND INITCAP(c.pais) = INITCAP(t.pais_tienda))
         GROUP BY (INITCAP(t.ciudad_tienda), INITCAP(t.pais_tienda));
 
-        -- ~ carga de direcciones
-        -- tiendas 
         INSERT INTO direccion(descripcion, codigo_postal, ciudad_id)
         SELECT  INITCAP(t.direccion_tienda) DESCRIPCION,
                 CASE 
@@ -38,8 +34,7 @@ CARGA_MASIVA= '''
         AND NOT EXISTS (SELECT * FROM direccion d
                         WHERE   c.id = d.ciudad_id AND INITCAP(t.direccion_tienda) = INITCAP(d.descripcion))
         GROUP BY(INITCAP(t.direccion_tienda), t.codigo_postal_tienda, c.id);
-        
-        -- empleados 
+
         INSERT INTO direccion(descripcion, codigo_postal, ciudad_id)
         SELECT  INITCAP(t.direccion_empleado) DESCRIPCION,
                 CASE 
@@ -67,9 +62,7 @@ CARGA_MASIVA= '''
         WHERE   c.id = d.ciudad_id AND CAST (t.codigo_postal_cliente AS INTEGER) = d.codigo_postal AND
                 INITCAP(t.direccion_cliente) = INITCAP(d.descripcion))
         GROUP BY( INITCAP(t.direccion_cliente), CAST (t.codigo_postal_cliente AS INTEGER), c.id);
-        
-        -- ================================================== TIENDAS ================================================== 
-           -- carga de tienda(nombre, direccion_id)
+
         INSERT INTO tienda(nombre, direccion_id)
         SELECT INITCAP(t.nombre_tienda) NOMBRE, d.id ID_DIRECCION 
         FROM TEMPORAL t, direccion d
@@ -85,8 +78,6 @@ CARGA_MASIVA= '''
                         d.id
                 );
 
-        -- ================================================== PERSONAS ================================================== 
-        -- -- carga de cliente(nombre, direccion, nombre_ciudad, nombre_pais)
         INSERT INTO cliente(nombre, apellido, correo, activo,fecha_creacion, tienda_id, direccion_id)
         SELECT  INITCAP(SPLIT_PART(t.nombre_cliente,' ', 1)) nombre_cliente, 
                 INITCAP(SPLIT_PART(t.nombre_cliente, ' ', 2)) apellido_cliente,
@@ -124,7 +115,6 @@ CARGA_MASIVA= '''
                 d.id
                 );
 
-        -- carga de empleados 
         INSERT INTO empleado(nombre, apellido, correo, usuario, contrasenia, activo, tienda_id, direccion_id, tipo_plaza)
         SELECT  INITCAP(SPLIT_PART(t.nombre_empleado,' ', 1)) nombre_empleado, 
                 INITCAP(SPLIT_PART(t.nombre_empleado, ' ', 2)) apellido_cliente,
@@ -172,26 +162,21 @@ CARGA_MASIVA= '''
                 d.id
                 );
 
-        -- -- ================================================== PELICULAS ================================================== 
-        -- -- carga de actor(nombre)
         INSERT INTO actor(nombre)
         SELECT INITCAP(t.actor_pelicula) AS ACTORES FROM TEMPORAL t 
         WHERE t.actor_pelicula <> '-'
         GROUP BY INITCAP(t.actor_pelicula);
 
-        -- -- carga de categoria(nombre)
         INSERT INTO categoria(nombre)
         SELECT INITCAP(t.categoria_pelicula) AS ACTORES FROM TEMPORAL t 
         WHERE t.categoria_pelicula <> '-'
         GROUP BY INITCAP(t.categoria_pelicula);
 
-        -- -- carga de categoria(nombre)
         INSERT INTO clasificacion(nombre)
         SELECT INITCAP(t.clasificacion) FROM TEMPORAL t 
         WHERE t.clasificacion <> '-'
         GROUP BY(INITCAP(t.clasificacion));
 
-        -- carga de pelicula(nombre)
         INSERT INTO pelicula(titulo, descripcion, anio_lanzamiento, dias_renta, costo_renta, duracion, costo_danio, clasificacion, idioma_original)
         SELECT  INITCAP(t.nombre_pelicula) AS TITULO, 
                 INITCAP(t.descripcion_pelicula) AS DESCRIPCION, 
@@ -209,21 +194,18 @@ CARGA_MASIVA= '''
         GROUP BY (INITCAP(t.nombre_pelicula), INITCAP(t.descripcion_pelicula), t.anio_lanzamiento, t.dias_renta, 
                 t.costo_renta, t.duracion, t.costo_por_danio, INITCAP(t.clasificacion), INITCAP(t.lenguaje_pelicula) );
 
-        -- -- carga de pelicula_actor(pelicula_id,actor_id)
         INSERT INTO pelicula_actor(pelicula_id, actor_id)
         SELECT p.id, a.id
         FROM TEMPORAL t, pelicula p, actor a
         WHERE INITCAP(t.nombre_pelicula) = p.titulo AND INITCAP(t.actor_pelicula) = a.nombre
         GROUP BY(p.id, a.id);
 
-        -- -- carga de pelicula_categoria(pelicula_id,categoria_id)
         INSERT INTO pelicula_categoria(pelicula_id, categoria_id)
         SELECT p.id, c.id
         FROM TEMPORAL t, pelicula p, categoria c
         WHERE INITCAP(t.nombre_pelicula) = p.titulo AND INITCAP(t.categoria_pelicula) = c.nombre
         GROUP BY(p.id, c.id);
         
-        -- -- carga de pelicula_tienda(pelicula_id,categoria_id)
         INSERT INTO pelicula_tienda(tienda_id, pelicula_id)
         SELECT ti.id TIENDA, p.id PELICULA
         FROM TEMPORAL t, pelicula p, tienda ti
@@ -240,7 +222,6 @@ CARGA_MASIVA= '''
                 p.id
                 );
 
-        -- -- carga de renta()
         INSERT INTO renta(cliente_id, empleado_id, pelicula_id, fecha_renta, fecha_retorno, fecha_pago, monto_a_pagar)
         SELECT  c.id, 
                 e.id,

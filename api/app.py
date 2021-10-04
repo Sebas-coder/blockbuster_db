@@ -11,7 +11,7 @@ def main():
 def getConteos():
     conexion = conection()
     consulta = conexion.conteos();
-    return jsonify({ "NAME": "Consulta 1", "QUERY":consulta})
+    return jsonify({ "NAME": "Conteos", "QUERY":consulta})
 
 @app.route("/consulta1")
 def getConsulta1():
@@ -83,19 +83,19 @@ def geteliminarTemporal():
 def geteliminarModelo():
     conexion = conection()
     consulta = conexion.eliminarModelo();
-    return jsonify({ "NAME": "Eliminar modelo", "RESULT":'Modelo eliminado correctamente'})
+    return jsonify({ "NAME": "Eliminar modelo", "RESULT":consulta})
 
 @app.route("/cargarTemporal")
 def getcargaTemporal():
     conexion = conection()
     consulta = conexion.cargaTemporal();
-    return jsonify({ "NAME": "Carga de temporal", "RESULT":'Temporal cargado correctamente'})
+    return jsonify({ "NAME": "Carga de temporal", "RESULT":consulta})
 
 @app.route("/cargarModelo")
 def getcargaModelo():
     conexion = conection()
     consulta = conexion.cargaModelo();
-    return jsonify({ "NAME": "Carga de Modelo", "RESULT":'Modelo cargado correctamente'})
+    return jsonify({ "NAME": "Carga de Modelo", "RESULT":consulta})
 
 if __name__ == '__main__':
     app.run(debug=True, port=4000)
